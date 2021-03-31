@@ -1,42 +1,28 @@
 import datetime as dt
 
- 
-class Calculator:
-    def __init__(self, limit):
-        self.limit = limit
 
-
-class CaloriesCalculator(Calculator):
-    def __init__(self, limit):
-        super().__init__(limit)
-        self.limit = limit
-
-
-class CashCalculator(Calculator):
-    def __init__(self, limit, currency):
-        super().__init__(limit)
-        self.currency = currency
-
-    def get_today_cash_remained(self):
-        USD_RATE = 75.66
-        EURO_RATE = 89.24
-        
-        #if self.limit
-
-
-class Record(Calculator):
-    def __init__(self, amount, comment, date):
+class Record:
+    today = dt.date.today().strftime("%d.%m.%Y")
+    def __init__(self, amount, comment, date=today):
         self.amount = amount
         self.comment = comment
         self.date = date
 
-    def show(self):
-        print(f'потрачено {self.amount} на {self.comment} дата {self.date}')
+class Calculator:
+    def __init__(self, limit):
+        self.limit = limit
+        self.records = []
+    def add_record(self, record):
+        self.records.append(record)
+    def get_today_stats(self):
+        return sum(record.amount for record in self.records)
 
+#class CaloriesCalculator:
+#    ...
 
-cash_calculator = Record(amount=3000, comment='бар в Танин др', date='08.11.2019')
+class CashCalculator(Calculator):
 
-cash_calculator.show()
+    ...
 
 # создадим калькулятор денег с дневным лимитом 1000
 cash_calculator = CashCalculator(1000)
@@ -48,8 +34,11 @@ cash_calculator.add_record(Record(amount=145, comment='кофе'))
 # и к этой записи тоже дата должна добавиться автоматически
 cash_calculator.add_record(Record(amount=300, comment='Серёге за обед'))
 # а тут пользователь указал дату, сохраняем её
+cash_calculator.add_record(Record(amount=3000,
+                                  comment='бар в Танин др',
+                                  date='31.03.2021'))
 
-
-print(cash_calculator.get_today_cash_remained('rub'))
+print(cash_calculator.get_today_stats())
+#print(cash_calculator.get_today_cash_remained('rub'))
 # должно напечататься
-# На сегодня осталось 555 руб 
+# На сегодня осталось 555 руб

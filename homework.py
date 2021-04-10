@@ -8,7 +8,7 @@ class Record:
         if date == '':
             self.date = dt.datetime.now().date()
         else:
-            self.date = dt.datetime.strptime(date, "%d.%m.%Y").date()
+            self.date = dt.datetime.strptime(date, '%d.%m.%Y').date()
 
 
 class Calculator:
@@ -41,10 +41,10 @@ class CaloriesCalculator(Calculator):
     def get_calories_remained(self):
         balance = self.limit - self.get_today_stats()
         if balance > 0:
-            return 'Сегодня можно съесть что-нибудь ещё, '\
-            f'но с общей калорийностью не более {balance} кКал'
+            return ('Сегодня можно съесть что-нибудь ещё, '
+                    f'но с общей калорийностью не более {balance} кКал')
         else:
-            return f'Хватит есть!'
+            return 'Хватит есть!'
 
 
 class CashCalculator(Calculator):
@@ -54,7 +54,6 @@ class CashCalculator(Calculator):
     def get_today_cash_remained(self, currency):
         balance = self.limit - self.get_today_stats()
         self.currency = currency
-        
         if self.currency == 'usd':
             name_currency = 'USD'
             value_currency = CashCalculator.USD_RATE
@@ -68,10 +67,22 @@ class CashCalculator(Calculator):
         balance_in_currency = abs(round((balance / value_currency), 2))
 
         if balance > 0:
-            return 'На сегодня осталось '\
-                f'{balance_in_currency} {name_currency}'
+            return ('На сегодня осталось '
+                    f'{balance_in_currency} {name_currency}')
         elif balance < 0:
-            return 'Денег нет, держись: твой долг - '\
-                f'{balance_in_currency} {name_currency}'
+            return ('Денег нет, держись: твой долг - '
+                    f'{balance_in_currency} {name_currency}')
         else:
             return 'Денег нет, держись'
+
+#cash
+cash_calculator = CashCalculator(1000)
+cash_calculator.add_record(Record(amount=145, comment='кофе'))
+cash_calculator.add_record(Record(amount=500, comment='Серёге за обед'))
+cash_calculator.add_record(Record(amount=3000, comment='бар в Танин др'))
+# print(cash_calculator.get_today_stats())
+# print(cash_calculator.get_week_stats())
+# print(cash_calculator.get_today_cash_remained('rub'))
+# print(cash_calculator.get_today_cash_remained('USD'))
+cash_calculator.add_record(Record(amount=5000, comment='бар в Танин др'))
+print(cash_calculator.get_today_cash_remained('usd'))

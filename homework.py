@@ -74,15 +74,3 @@ class CashCalculator(Calculator):
                     f'{balance_in_currency} {name_currency}')
         else:
             return 'Денег нет, держись'
-
-#cash
-cash_calculator = CashCalculator(1000)
-cash_calculator.add_record(Record(amount=145, comment='кофе'))
-cash_calculator.add_record(Record(amount=500, comment='Серёге за обед'))
-cash_calculator.add_record(Record(amount=3000, comment='бар в Танин др'))
-# print(cash_calculator.get_today_stats())
-# print(cash_calculator.get_week_stats())
-# print(cash_calculator.get_today_cash_remained('rub'))
-# print(cash_calculator.get_today_cash_remained('USD'))
-cash_calculator.add_record(Record(amount=5000, comment='бар в Танин др'))
-print(cash_calculator.get_today_cash_remained('usd'))

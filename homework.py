@@ -1,14 +1,18 @@
 import datetime as dt
 
 
+DATE_FORMAT = '%d.%m.%Y'
+TODAY = dt.date.today()
+
+
 class Record:
-    def __init__(self, amount, comment, date=''):
+    def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
-        if date == '':
-            self.date = dt.datetime.now().date()
+        if date == None:
+            self.date = TODAY
         else:
-            self.date = dt.datetime.strptime(date, '%d.%m.%Y').date()
+            self.date = dt.datetime.strptime(date, DATE_FORMAT).date()
 
 
 class Calculator:
@@ -20,21 +24,19 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self):
-        sum = 0
+        stats = 0
         for record in self.records:
-            if record.date == dt.datetime.now().date():
-                sum += record.amount
-        return sum
+            if record.date == TODAY:
+                stats += record.amount
+        return stats
 
     def get_week_stats(self):
-        sum = 0
-        today = dt.datetime.now().date()
-        week = today - dt.timedelta(days=7)
+        stats = 0
+        week = TODAY - dt.timedelta(days=7)
         for record in self.records:
-            date_from_record = record.date
-            if today >= date_from_record > week:
-                sum += record.amount
-        return sum
+            if TODAY >= record.date > week:
+                stats += record.amount
+        return stats
 
 
 class CaloriesCalculator(Calculator):
@@ -43,8 +45,7 @@ class CaloriesCalculator(Calculator):
         if balance > 0:
             return ('Сегодня можно съесть что-нибудь ещё, '
                     f'но с общей калорийностью не более {balance} кКал')
-        else:
-            return 'Хватит есть!'
+        return 'Хватит есть!'
 
 
 class CashCalculator(Calculator):
@@ -56,21 +57,20 @@ class CashCalculator(Calculator):
         self.currency = currency
         if self.currency == 'usd':
             name_currency = 'USD'
-            value_currency = CashCalculator.USD_RATE
+            value_currency = self.USD_RATE
         elif self.currency == 'eur':
             name_currency = 'Euro'
-            value_currency = CashCalculator.EURO_RATE
+            value_currency = self.EURO_RATE
         elif self.currency == 'rub':
             name_currency = 'руб'
             value_currency = 1.0
 
         balance_in_currency = abs(round((balance / value_currency), 2))
 
-        if balance > 0:
+        if balance == 0:
+            return 'Денег нет, держись'
+        elif balance > 0:
             return ('На сегодня осталось '
                     f'{balance_in_currency} {name_currency}')
-        elif balance < 0:
-            return ('Денег нет, держись: твой долг - '
+        return ('Денег нет, держись: твой долг - '
                     f'{balance_in_currency} {name_currency}')
-        else:
-            return 'Денег нет, держись'

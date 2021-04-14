@@ -34,14 +34,17 @@ class Calculator:
         stats = 0
         week = TODAY - dt.timedelta(days=7)
         for record in self.records:
-            if TODAY >= record.date > week:
+            if week < record.date <= TODAY:
                 stats += record.amount
         return stats
+
+    def get_balance(self):
+        return self.limit - self.get_today_stats()
 
 
 class CaloriesCalculator(Calculator):
     def get_calories_remained(self):
-        balance = self.limit - self.get_today_stats()
+        balance = self.get_balance()
         if balance > 0:
             return ('Сегодня можно съесть что-нибудь ещё, '
                     f'но с общей калорийностью не более {balance} кКал')
@@ -51,26 +54,24 @@ class CaloriesCalculator(Calculator):
 class CashCalculator(Calculator):
     EURO_RATE = 92.14
     USD_RATE = 77.39
+    RUB_RATE = 1
 
     def get_today_cash_remained(self, currency):
-        balance = self.limit - self.get_today_stats()
-        self.currency = currency
-        if self.currency == 'usd':
-            name_currency = 'USD'
-            value_currency = self.USD_RATE
-        elif self.currency == 'eur':
-            name_currency = 'Euro'
-            value_currency = self.EURO_RATE
-        elif self.currency == 'rub':
-            name_currency = 'руб'
-            value_currency = 1.0
+        balance = self.get_balance()
+        currencies = {'eur': ['Euro', self.EURO_RATE],
+                      'usd': ['USD', self.USD_RATE],
+                      'rub': ['руб', self.RUB_RATE]}
 
-        balance_in_currency = abs(round((balance / value_currency), 2))
+        try:
+            balance_in_currency = abs(round((balance / currencies[currency][1]), 2))
 
-        if balance == 0:
-            return 'Денег нет, держись'
-        elif balance > 0:
-            return ('На сегодня осталось '
-                    f'{balance_in_currency} {name_currency}')
-        return ('Денег нет, держись: твой долг - '
-                    f'{balance_in_currency} {name_currency}')
+            if balance == 0:
+                return 'Денег нет, держись'
+            elif balance > 0:
+                return ('На сегодня осталось '
+                        f'{balance_in_currency} {currencies[currency][0]}')
+            return ('Денег нет, держись: твой долг - '
+                    f'{balance_in_currency} {currencies[currency][0]}')
+
+        except:
+            raise ValueError('Вы неверно ввели название валюту. Попробуйте ещё раз.')

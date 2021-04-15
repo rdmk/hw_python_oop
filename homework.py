@@ -6,6 +6,8 @@ TODAY = dt.date.today()
 
 
 class Record:
+    """Класс Record предназначен для хранения записей."""
+
     def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
@@ -16,27 +18,37 @@ class Record:
 
 
 class Calculator:
+    """Класс Калькулятор предназначен для подсчёта калорий и денег."""
+
     def __init__(self, limit):
+        """Конструктор класса."""
         self.limit = limit
         self.records = []
 
     def add_record(self, record):
+        """Добавление записей."""
         self.records.append(record)
 
     def get_today_stats(self):
+        """Подсчёт дневной статистики."""
         return sum([record.amount for record in self.records
                     if record.date == TODAY])
 
     def get_week_stats(self):
+        """Подсчёт недельной статистики."""
         week = TODAY - dt.timedelta(days=7)
         return sum([record.amount for record in self.records
                     if week < record.date <= TODAY])
 
     def get_balance(self):
+        """Подсчёт остатка."""
         return self.limit - self.get_today_stats()
 
 
 class CaloriesCalculator(Calculator):
+    """Дочерний класс Калькулятора - Калькулятор калорий.
+    Предназначен для определения калорий, которые можно получить сегодня."""
+
     def get_calories_remained(self):
         balance = self.get_balance()
         if balance > 0:
@@ -46,6 +58,10 @@ class CaloriesCalculator(Calculator):
 
 
 class CashCalculator(Calculator):
+    """Дочерний класс Калькулятора - Калькулятор денег.
+    Определяет, сколько ещё денег можно потратить сегодня в рублях,
+    долларах или евро."""
+
     EURO_RATE = 92.14
     USD_RATE = 77.39
     RUB_RATE = 1

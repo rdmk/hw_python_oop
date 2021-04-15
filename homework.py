@@ -1,5 +1,4 @@
 from typing import Optional
-
 import datetime as dt
 
 DATE_FORMAT = '%d.%m.%Y'

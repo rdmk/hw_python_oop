@@ -24,19 +24,13 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self):
-        stats = 0
-        for record in self.records:
-            if record.date == TODAY:
-                stats += record.amount
-        return stats
+        return sum([record.amount for record in self.records
+                    if record.date == TODAY])
 
     def get_week_stats(self):
-        stats = 0
         week = TODAY - dt.timedelta(days=7)
-        for record in self.records:
-            if week < record.date <= TODAY:
-                stats += record.amount
-        return stats
+        return sum([record.amount for record in self.records
+                    if week < record.date <= TODAY])
 
     def get_balance(self):
         return self.limit - self.get_today_stats()
@@ -66,7 +60,7 @@ class CashCalculator(Calculator):
             raise ValueError('Нет такой валюты. Попробуйте ещё раз.')
 
         balance_in_currency = abs(round((balance / currencies[currency][1]), 2))
-           
+
         if balance == 0:
             return 'Денег нет, держись'
         elif balance > 0:

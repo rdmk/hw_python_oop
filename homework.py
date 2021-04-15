@@ -62,16 +62,15 @@ class CashCalculator(Calculator):
                       'usd': ['USD', self.USD_RATE],
                       'rub': ['руб', self.RUB_RATE]}
 
-        try:
-            balance_in_currency = abs(round((balance / currencies[currency][1]), 2))
+        if currency not in currencies:
+            raise ValueError('Нет такой валюты. Попробуйте ещё раз.')
 
-            if balance == 0:
-                return 'Денег нет, держись'
-            elif balance > 0:
-                return ('На сегодня осталось '
-                        f'{balance_in_currency} {currencies[currency][0]}')
-            return ('Денег нет, держись: твой долг - '
+        balance_in_currency = abs(round((balance / currencies[currency][1]), 2))
+           
+        if balance == 0:
+            return 'Денег нет, держись'
+        elif balance > 0:
+            return ('На сегодня осталось '
                     f'{balance_in_currency} {currencies[currency][0]}')
-
-        except:
-            raise ValueError('Вы неверно ввели название валюту. Попробуйте ещё раз.')
+        return ('Денег нет, держись: твой долг - '
+                f'{balance_in_currency} {currencies[currency][0]}')

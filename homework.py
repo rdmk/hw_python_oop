@@ -1,14 +1,21 @@
-import datetime as dt
+from __future__ import annotations
+from typing import Optional
 
+import datetime as dt
 
 DATE_FORMAT = '%d.%m.%Y'
 TODAY = dt.date.today()
 
 
 class Record:
-    """Класс Record предназначен для хранения записей."""
+    """Класс Record предназначен для создания записей."""
 
-    def __init__(self, amount, comment, date=None):
+    amount: int
+    comment: str
+    date: dt.date
+
+    def __init__(self, amount: int, comment: str,
+                 date: Optional[str] = None) -> None:
         self.amount = amount
         self.comment = comment
         if date == None:
@@ -20,27 +27,30 @@ class Record:
 class Calculator:
     """Класс Калькулятор предназначен для подсчёта калорий и денег."""
 
-    def __init__(self, limit):
+    limit: int
+    records: list
+
+    def __init__(self, limit: int):
         """Конструктор класса."""
         self.limit = limit
         self.records = []
 
-    def add_record(self, record):
+    def add_record(self, record) -> None:
         """Добавление записей."""
         self.records.append(record)
 
-    def get_today_stats(self):
+    def get_today_stats(self) -> int:
         """Подсчёт дневной статистики."""
         return sum([record.amount for record in self.records
                     if record.date == TODAY])
 
-    def get_week_stats(self):
+    def get_week_stats(self) -> int:
         """Подсчёт недельной статистики."""
         week = TODAY - dt.timedelta(days=7)
         return sum([record.amount for record in self.records
                     if week < record.date <= TODAY])
 
-    def get_balance(self):
+    def get_balance(self) -> int:
         """Подсчёт остатка."""
         return self.limit - self.get_today_stats()
 
@@ -49,7 +59,7 @@ class CaloriesCalculator(Calculator):
     """Дочерний класс Калькулятора - Калькулятор калорий.
     Предназначен для определения калорий, которые можно получить сегодня."""
 
-    def get_calories_remained(self):
+    def get_calories_remained(self) -> str:
         balance = self.get_balance()
         if balance > 0:
             return ('Сегодня можно съесть что-нибудь ещё, '
@@ -62,11 +72,13 @@ class CashCalculator(Calculator):
     Определяет, сколько ещё денег можно потратить сегодня в рублях,
     долларах или евро."""
 
+    currency: str
+
     EURO_RATE = 92.14
     USD_RATE = 77.39
     RUB_RATE = 1
 
-    def get_today_cash_remained(self, currency):
+    def get_today_cash_remained(self, currency: str) -> str:
         balance = self.get_balance()
         currencies = {'eur': ['Euro', self.EURO_RATE],
                       'usd': ['USD', self.USD_RATE],

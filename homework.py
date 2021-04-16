@@ -1,5 +1,5 @@
-from typing import Optional
 import datetime as dt
+
 
 DATE_FORMAT = '%d.%m.%Y'
 TODAY = dt.date.today()
@@ -84,7 +84,8 @@ class CashCalculator(Calculator):
         if currency not in currencies:
             raise ValueError('Нет такой валюты. Попробуйте ещё раз.')
 
-        balance_in_currency = abs(round((balance / currencies[currency][1]), 2))
+        balance_in_currency = abs(round(
+            (balance / currencies[currency][1]), 2))
 
         if balance == 0:
             return 'Денег нет, держись'

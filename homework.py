@@ -12,11 +12,10 @@ class Record:
     comment: str
     date: dt.date
 
-    def __init__(self, amount: int, comment: str,
-                 date: Optional[str] = None) -> None:
+    def __init__(self, amount: int, comment: str, date: str = None) -> None:
         self.amount = amount
         self.comment = comment
-        if date == None:
+        if date is None:
             self.date = TODAY
         else:
             self.date = dt.datetime.strptime(date, DATE_FORMAT).date()
@@ -78,9 +77,9 @@ class CashCalculator(Calculator):
 
     def get_today_cash_remained(self, currency: str) -> str:
         balance = self.get_balance()
-        currencies = {'eur': ['Euro', self.EURO_RATE],
-                      'usd': ['USD', self.USD_RATE],
-                      'rub': ['руб', self.RUB_RATE]}
+        currencies = {'eur': ('Euro', self.EURO_RATE),
+                      'usd': ('USD', self.USD_RATE),
+                      'rub': ('руб', self.RUB_RATE)}
 
         if currency not in currencies:
             raise ValueError('Нет такой валюты. Попробуйте ещё раз.')

@@ -24,7 +24,7 @@ class Calculator:
     """Класс Калькулятор предназначен для подсчёта калорий и денег."""
 
     limit: int
-    record: List[Record] 
+    record: List[Record]
 
     def __init__(self, limit: int) -> None:
         """Конструктор класса."""
@@ -46,7 +46,7 @@ class Calculator:
         today = dt.date.today()
         week = dt.date.today() - dt.timedelta(days=7)
         return sum(record.amount for record in self.records
-                    if week < record.date <= today)
+                   if week < record.date <= today)
 
     def get_balance(self) -> int:
         """Подсчёт остатка."""
@@ -92,9 +92,10 @@ class CashCalculator(Calculator):
             return 'Денег нет, держись'
 
         currency_name, currency_rate = currencies[currency]
-        balance_in_currency = abs(round((balance / currencies[currency][1]), 2))
+        currency_balance = abs(round((balance / currencies[currency][1]), 2))
 
         if balance > 0:
-            return (f'На сегодня осталось {balance_in_currency} {currency_name}')
+            return (f'На сегодня осталось {currency_balance} {currency_name}')
 
-        return (f'Денег нет, держись: твой долг - {balance_in_currency} {currency_name}')
+        return ('Денег нет, держись: твой долг - '
+                f'{currency_balance} {currency_name}')
